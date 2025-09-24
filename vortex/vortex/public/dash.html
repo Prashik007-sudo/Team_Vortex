@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --light-blue: #e8f4f8;
@@ -17,7 +18,7 @@
             --gray: #7f8c8d;
             --text-color: #333;
         }
-
+        
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--light-blue);
@@ -25,6 +26,12 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M20 0 L0 20 L20 40 L40 20 Z' fill='%23dbeafe'/%3E%3Cpath d='M60 0 L40 20 L60 40 L80 20 Z' fill='%23dbeafe'/%3E%3Cpath d='M20 40 L0 60 L20 80 L40 60 Z' fill='%23dbeafe'/%3E%3Cpath d='M60 40 L40 60 L60 80 L80 60 Z' fill='%23dbeafe'/%3E%3C/svg%3E");
+            background-size: 80px 80px;
+            background-repeat: repeat;
         }
 
         .header {
@@ -35,7 +42,18 @@
             top: 0;
             z-index: 1000;
         }
-
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: center;
+                padding-bottom: 1rem;
+            }
+            .header nav {
+                margin-top: 1rem;
+            }
+        }
+        
         .website-name {
             font-size: 1.5rem;
             font-weight: 700;
@@ -55,121 +73,190 @@
             background-color: var(--light-blue);
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        .bi-cash-coin {
+            font-size: 3rem !important;
+            color: var(--blue);
+        }
+
+        .main-container {
+            flex-grow: 1;
         }
 
         .card {
-            border: none;
-            border-radius: 1rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .card.clickable-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-body {
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .card-icon {
-            font-size: 3.5rem;
-            color: var(--blue);
-            margin-bottom: 1rem;
-        }
-
-        .card-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .text-blue {
-            color: var(--blue);
-        }
-
-        .text-dark-blue {
-            color: var(--dark-blue);
-        }
-
-        .bg-light-blue {
-            background-color: var(--light-blue);
-        }
-
-        .bg-off-white {
-            background-color: var(--off-white);
-        }
-
-        .text-gray {
-            color: var(--gray);
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         .footer {
             background-color: #fff;
             border-top: 1px solid #eee;
+            width: 100%;
         }
 
-        /* Utility classes from Bootstrap-like framework */
-        .d-flex { display: flex; }
-        .align-items-center { align-items: center; }
-        .justify-content-between { justify-content: space-between; }
-        .px-4 { padding-left: 1.5rem; padding-right: 1.5rem; }
-        .ml-3 { margin-left: 1rem; }
-        .my-5 { margin-top: 3rem; margin-bottom: 3rem; }
-        .text-center { text-align: center; }
-        .mb-5 { margin-bottom: 3rem; }
-        .row { display: flex; flex-wrap: nowrap; margin-left: -1rem; margin-right: -1rem; }
-        .col-md-4 { padding-left: 1rem; padding-right: 1rem; margin-bottom: 1.5rem; flex: 1 1 33.333333%; }
-        .mb-4 { margin-bottom: 1.5rem; }
-        .h-100 { height: 100%; }
-        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .py-3 { padding-top: 1rem; padding-bottom: 1rem; }
+        /* Chatbot specific styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+            height: 500px;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+            transform: scale(0);
+            transform-origin: bottom right;
+        }
+        
+        .chatbot-container.open {
+            transform: scale(1);
+        }
 
-        /* Custom Styles for this version */
-        .header .d-flex.align-items-center {
+        .chatbot-header {
+            background-color: #3498db;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .chatbot-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             gap: 0.75rem;
+            background-color: #f5f5f5;
         }
 
-        .header nav {
-            gap: 1.5rem;
+        .message-bubble {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            word-wrap: break-word;
         }
 
-        .bi-cash-coin {
-            font-size: 3rem !important;
+        .user-message {
+            background-color: #3498db;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
         }
 
-        .text-blue.mb-5 {
-            font-size: 3rem;
+        .bot-message {
+            background-color: #e5e7eb;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
         }
 
-        @media (max-width: 768px) {
-            .text-blue.mb-5 {
-                font-size: 2.5rem;
+        .chatbot-input {
+            padding: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .chatbot-input input {
+            flex-grow: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            padding: 0.75rem 1rem;
+            outline: none;
+        }
+        
+        .chatbot-input button {
+            background-color: #3498db;
+            color: white;
+            border-radius: 9999px;
+            padding: 0.75rem 1rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #3498db;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+        
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.2rem;
+            height: 1.5rem;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #555;
+            border-radius: 50%;
+            animation: bounce 0.8s infinite ease-in-out;
+        }
+
+        .loading-dot:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .loading-dot:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
             }
-            .header {
-                flex-direction: column;
-                padding-bottom: 1rem;
-            }
-            .header nav {
-                margin-top: 1rem;
+            50% {
+                transform: translateY(-5px);
             }
         }
+        
+        /* Utility classes */
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .rounded-full { border-radius: 9999px; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
     </style>
 </head>
 <body class="bg-light-blue">
-    <header class="header d-flex align-items-center justify-content-between px-4">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-cash-coin" style="color: #3498db;"></i>
+    <header class="header flex items-center justify-between px-4">
+        <div class="flex items-center">
+            <i class="bi bi-cash-coin"></i>
             <h1 class="website-name ml-3">EasyEMI</h1>
         </div>
-        <nav class="d-flex align-items-center">
+        <nav class="flex items-center">
             <a href="emiplan.html" class="nav-link">EMI</a>
             <a href="takeloan.html" class="nav-link">Take loans</a>
             <a href="finance.html" class="nav-link">Refinancing</a>
@@ -177,42 +264,169 @@
         <div></div>
     </header>
 
-    <main class="container my-5">
-        <h1 class="text-center mb-5 text-blue">Dashboard</h1>
-        <div class="row">
+    <main class="main-container container mx-auto my-5">
+        <h1 class="text-center mb-5 text-blue text-5xl font-bold">Dashboard</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="col-md-4 mb-4">
-                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='emiplan.html';">
-                    <div class="card-body">
-                        <i class="bi bi-calculator-fill card-icon"></i>
-                        <h5 class="card-title text-dark-blue">EMI</h5>
-                        <p class="card-text text-gray">Learn about EMI calculations and what they mean for your loans.</p>
+                <div class="card text-center h-full shadow-sm bg-off-white rounded-lg clickable-card p-6" onclick="window.location.href='emiplan.html';">
+                    <div class="flex flex-col items-center">
+                        <i class="bi bi-calculator-fill text-6xl text-blue transition-transform duration-300 ease-in-out transform hover:rotate-6"></i>
+                        <h5 class="card-title text-dark-blue text-2xl font-semibold mt-4">EMI</h5>
+                        <p class="card-text text-gray text-base mt-2">Learn about EMI calculations and what they mean for your loans.</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
-                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='takeloan.html';">
-                    <div class="card-body">
-                        <i class="bi bi-piggy-bank-fill card-icon"></i>
-                        <h5 class="card-title text-dark-blue">Take Loan</h5>
-                        <p class="card-text text-gray">Explore various loan options tailored to your needs.</p>
+                <div class="card text-center h-full shadow-sm bg-off-white rounded-lg clickable-card p-6" onclick="window.location.href='takeloan.html';">
+                    <div class="flex flex-col items-center">
+                        <i class="bi bi-piggy-bank-fill text-6xl text-blue transition-transform duration-300 ease-in-out transform hover:rotate-6"></i>
+                        <h5 class="card-title text-dark-blue text-2xl font-semibold mt-4">Take Loan</h5>
+                        <p class="card-text text-gray text-base mt-2">Explore various loan options tailored to your needs.</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
-                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='finance.html';">
-                    <div class="card-body">
-                        <i class="bi bi-arrow-repeat card-icon"></i>
-                        <h5 class="card-title text-dark-blue">Refinancing</h5>
-                        <p class="card-text text-gray">Discover how refinancing can help you manage your existing loans better.</p>
+                <div class="card text-center h-full shadow-sm bg-off-white rounded-lg clickable-card p-6" onclick="window.location.href='finance.html';">
+                    <div class="flex flex-col items-center">
+                        <i class="bi bi-arrow-repeat text-6xl text-blue transition-transform duration-300 ease-in-out transform hover:rotate-6"></i>
+                        <h5 class="card-title text-dark-blue text-2xl font-semibold mt-4">Refinancing</h5>
+                        <p class="card-text text-gray text-base mt-2">Discover how refinancing can help you manage your existing loans better.</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
+    
     <footer class="footer text-center py-3 bg-off-white text-gray">
         &copy; 2025 EasyEMI. All rights reserved.
     </footer>
-    <script src="js/all.js"></script>
+
+    <!-- Chatbot Container -->
+    <div class="chatbot-container" id="chatbot-container">
+        <div class="chatbot-header">
+            <span class="text-xl font-semibold">EasyEMI Bot</span>
+            <button class="text-white text-2xl focus:outline-none" onclick="toggleChat()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="message-bubble bot-message">
+                Hello! I'm here to help. What can I assist you with today?
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="user-input" placeholder="Type your message..." onkeydown="handleKey(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Chatbot Toggle Button -->
+    <div class="chatbot-toggle" id="chatbot-toggle" onclick="toggleChat()">
+        <i class="bi bi-chat-dots-fill text-2xl"></i>
+    </div>
+    
+    <script>
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+        const userInput = document.getElementById('user-input');
+
+        let chatHistory = [];
+
+        function toggleChat() {
+            chatbotContainer.classList.toggle('open');
+            userInput.focus();
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            // Add user message to UI
+            addMessage(message, 'user');
+            userInput.value = '';
+
+            // Add loading indicator
+            const loadingBubble = addMessage('', 'bot');
+            loadingBubble.innerHTML = `
+                <div class="loading-dots">
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                </div>
+            `;
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+            chatHistory.push({ role: 'user', parts: [{ text: message }] });
+
+            try {
+                const response = await fetchChatbotResponse();
+                loadingBubble.innerHTML = response;
+            } catch (error) {
+                console.error("Error fetching chatbot response:", error);
+                loadingBubble.innerHTML = `Sorry, an error occurred. Please try again later.`;
+            }
+
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function addMessage(text, sender) {
+            const messageBubble = document.createElement('div');
+            messageBubble.classList.add('message-bubble');
+            if (sender === 'user') {
+                messageBubble.classList.add('user-message');
+            } else {
+                messageBubble.classList.add('bot-message');
+            }
+            messageBubble.textContent = text;
+            chatbotMessages.appendChild(messageBubble);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            return messageBubble;
+        }
+
+        function handleKey(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function fetchChatbotResponse() {
+            const apiKey = "AIzaSyBT_30Yfmhn_L71GyDdWyFAuvyP1mmtai0"; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: chatHistory,
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: "Act as a friendly and helpful financial assistant. Provide clear, logical, and easy-to-understand answers to financial questions. When asked about complex topics like EMIs or refinancing, provide a brief, structured explanation. Use Google Search to ensure all information is accurate and up-to-date. Keep the tone encouraging and professional." }]
+                },
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('API call failed:', response.status, errorData);
+                throw new Error('API call failed.');
+            }
+
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+            
+            if (candidate && candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                const text = candidate.content.parts[0].text;
+                chatHistory.push({ role: 'model', parts: [{ text: text }] });
+                return text;
+            } else {
+                // If API response is empty, check for blockReason
+                const blockReason = result.promptFeedback?.blockReason || 'Unknown';
+                console.error('API response was blocked or empty. Reason:', blockReason);
+                throw new Error(`API call blocked. Reason: ${blockReason}`);
+            }
+        }
+    </script>
 </body>
 </html>
