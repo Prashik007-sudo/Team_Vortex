@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyEMI - Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/all.css">
+</head>
+<body class="bg-light-blue">
+    <header class="header d-flex align-items-center justify-content-between px-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-cash-coin" style="font-size: 2rem; color: #3498db;"></i>
+            <h1 class="website-name ml-3">EasyEMI</h1>
+        </div>
+        <nav class="d-flex align-items-center">
+            <a href="emiplan.html" class="nav-link">EMI</a>
+            <a href="takeloan.html" class="nav-link">Take loans</a>
+            <a href="finance.html" class="nav-link">Refinancing</a>
+        </nav>
+        <div></div>
+    </header>
+
+    <main class="container my-5">
+        <h1 class="text-center mb-5 text-blue">Dashboard</h1>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='emiplan.html';">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark-blue">EMI</h5>
+                        <p class="card-text text-gray">Learn about EMI calculations and what they mean for your loans.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='takeloan.html';">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark-blue">Take Loan</h5>
+                        <p class="card-text text-gray">Explore various loan options tailored to your needs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='finance.html';">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark-blue">Refinancing</h5>
+                        <p class="card-text text-gray">Discover how refinancing can help you manage your existing loans better.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer text-center py-3 bg-off-white text-gray">
+        &copy; 2025 EasyEMI. All rights reserved.
+    </footer>
+    <script src="js/all.js"></script>
+</body>
+</html>
