@@ -4,109 +4,391 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Refinancing Calculator</title>
-    <link href="refinance.css" rel="stylesheet">
-
+    <!-- Use Chart.js for the bar chart visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+            margin: 0;
         }
-        /* Custom styles for the chart */
-        #paymentChart {
-            max-width: 600px;
-            margin: auto;
+
+        /* The parent div container */
+        .calculator-container {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            width: 100%;
+            max-width: 85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .calculator-container {
+                flex-direction: row;
+            }
+        }
+
+        /* The child divs for inputs and results */
+        .calculator-inputs, .calculator-results {
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .calculator-inputs, .calculator-results {
+                width: 50%;
+            }
+        }
+
+        h1 {
+            font-size: 1.875rem; /* 3xl */
+            font-weight: 700; /* bold */
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.25rem; /* xl */
+            font-weight: 600; /* semibold */
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .loan-snapshot {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 0.5rem;
+        }
+        
+        .refinance-input {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .input-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .input-group.full-width {
+             grid-template-columns: 1fr;
+        }
+
+        .input-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 0.25rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px #c7d2fe;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: #4f46e5;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #4338ca;
+        }
+
+        button:focus {
+            outline: 2px solid #4f46e5;
+            outline-offset: 2px;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 25rem; /* 400px */
+        }
+        
+        .placeholder-text {
+            color: #9ca3af;
+            text-align: center;
+            width: 100%;
+        }
+
+        .result-section {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1.5rem;
+            background-color: #f0fdf4;
+            border: 1px solid #dcfce7;
+            border-radius: 0.5rem;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .result-value {
+            margin-top: 0.25rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .chart-section {
+            width: 100%;
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out forwards;
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
-        <div class="flex flex-col gap-6">
-            <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Refinancing Calculator</h1>
-
-            <!-- 1. Current Loan Snapshot (User Input) -->
-            <div class="space-y-4 mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-                <h2 class="text-xl font-semibold text-blue-800">Current Loan Snapshot</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="currentPrincipal" class="block text-sm font-medium text-gray-700">Outstanding Principal (₹)</label>
-                        <input type="number" id="currentPrincipal" value="500000" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 500000">
+    <!-- The one big div that contains all -->
+    <div class="calculator-container">
+        
+        <!-- Left Half: Calculator Inputs -->
+        <div class="calculator-inputs">
+            <h1>Refinancing Calculator</h1>
+            
+            <!-- Current Loan Snapshot (User Input) -->
+            <div class="loan-snapshot">
+                <h2 style="color: #1e40af;">Current Loan Snapshot</h2>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="currentPrincipal">Outstanding Principal (₹)</label>
+                        <input type="number" id="currentPrincipal" value="500000" placeholder="e.g., 500000">
                     </div>
-                    <div>
-                        <label for="currentTenure" class="block text-sm font-medium text-gray-700">Remaining Tenure (months)</label>
-                        <input type="number" id="currentTenure" value="60" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 60">
+                    <div class="input-item">
+                        <label for="currentTenure">Remaining Tenure (months)</label>
+                        <input type="number" id="currentTenure" value="60" placeholder="e.g., 60">
                     </div>
-                    <div>
-                        <label for="currentRate" class="block text-sm font-medium text-gray-700">Current Interest Rate (%)</label>
-                        <input type="number" id="currentRate" value="12" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 12">
+                    <div class="input-item">
+                        <label for="currentRate">Current Interest Rate (%)</label>
+                        <input type="number" id="currentRate" value="12" placeholder="e.g., 12">
                     </div>
-                    <div>
-                        <label for="currentEMI" class="block text-sm font-medium text-gray-700">Current EMI (₹)</label>
-                        <input type="number" id="currentEMI" value="11122" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 11122">
+                    <div class="input-item">
+                        <label for="currentEMI">Current EMI (₹)</label>
+                        <input type="number" id="currentEMI" value="11122" placeholder="e.g., 11122">
                     </div>
                 </div>
             </div>
 
-            <!-- 2. Refinance Input -->
-            <div class="space-y-6 mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800">Refinance Offer</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="newRate" class="block text-sm font-medium text-gray-700">New Interest Rate (%)</label>
-                        <input type="number" id="newRate" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 9.5">
+            <!-- Refinance Input -->
+            <div class="refinance-input">
+                <h2 style="color: #1f2937;">Refinance Offer</h2>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="newRate">New Interest Rate (%)</label>
+                        <input type="number" id="newRate" placeholder="e.g., 9.5">
                     </div>
-                    <div>
-                        <label for="newTenure" class="block text-sm font-medium text-gray-700">New Tenure (months)</label>
-                        <input type="number" id="newTenure" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 48">
+                    <div class="input-item">
+                        <label for="newTenure">New Tenure (months)</label>
+                        <input type="number" id="newTenure" placeholder="e.g., 48">
                     </div>
-                    <div class="col-span-1 sm:col-span-2">
-                        <label for="processingFee" class="block text-sm font-medium text-gray-700">Processing Fee (₹)</label>
-                        <input type="number" id="processingFee" value="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                    <div class="input-item full-width">
+                        <label for="processingFee">Processing Fee (₹)</label>
+                        <input type="number" id="processingFee" value="0">
                     </div>
                 </div>
-
-                <button onclick="calculateRefinance()" class="w-full py-3 px-4 rounded-md text-white font-semibold shadow-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                <button onclick="calculateRefinance()">
                     CALCULATE REFINANCE BENEFIT
                 </button>
+                <p id="error-message" class="error-message">Please fill out all loan details before calculating.</p>
             </div>
-        
         </div>
-        <div display>
-            <!-- 3. Comparison Result -->
-            <div id="resultSection" class="hidden space-y-4 mb-8 p-6 bg-green-50 rounded-lg border border-green-200">
-                <h2 class="text-xl font-semibold text-green-800">Comparison Result</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">New EMI</label>
-                        <p id="newEMI" class="mt-1 text-lg font-bold text-gray-800"></p>
+
+        <!-- Right Half: Results & Visualization -->
+        <div id="results-container" class="calculator-results">
+            <div id="placeholder" class="placeholder-text">
+                <h2 style="color: #9ca3af;">Results will appear here</h2>
+                <p style="font-size: 0.875rem;">Enter your loan details on the left and click "Calculate".</p>
+                <canvas id="placeholderChart" class="animate-fade-in" style="max-width: 20rem; margin: 1rem auto;"></canvas>
+            </div>
+
+            <!-- Comparison Result -->
+            <div id="resultSection" class="result-section animate-fade-in">
+                <h2 style="color: #166534;">Comparison Result</h2>
+                <div class="input-group">
+                    <div class="result-item">
+                        <label class="result-label">New EMI</label>
+                        <p id="newEMI" class="result-value"></p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Old Total Payment</label>
-                        <p id="oldTotalPayment" class="mt-1 text-lg font-bold text-gray-800"></p>
+                    <div class="result-item">
+                        <label class="result-label">Old Total Payment</label>
+                        <p id="oldTotalPayment" class="result-value"></p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">New Total Payment</label>
-                        <p id="newTotalPayment" class="mt-1 text-lg font-bold text-gray-800"></p>
+                    <div class="result-item">
+                        <label class="result-label">New Total Payment</label>
+                        <p id="newTotalPayment" class="result-value"></p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Net Savings</label>
-                        <p id="netSavings" class="mt-1 text-lg font-bold text-gray-800"></p>
+                    <div class="result-item">
+                        <label class="result-label">Net Savings</label>
+                        <p id="netSavings" class="result-value"></p>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. Quick Visualization -->
-            <div id="chartSection" class="hidden p-6">
-                <h2 class="text-xl font-semibold text-center text-gray-800 mb-4">Total Payment Comparison</h2>
+            <!-- Quick Visualization -->
+            <div id="chartSection" class="chart-section animate-fade-in">
+                <h2 class="chart-title">Total Payment Comparison</h2>
                 <canvas id="paymentChart"></canvas>
             </div>
         </div>
     </div>
 
     <script>
-        let myChart; // Variable to hold the Chart.js instance
+        let myChart; // Variable to hold the Chart.js instance for the results
+        let placeholderChart; // Variable for the placeholder animation chart
+        let placeholderInterval; // Variable to hold the interval for the animation
+
+        // Function to start the placeholder animation
+        function startPlaceholderAnimation() {
+            const ctx = document.getElementById('placeholderChart').getContext('2d');
+            
+            // Generate initial random data
+            const data = [Math.random() * 50, Math.random() * 50];
+
+            placeholderChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Current', 'New'],
+                    datasets: [{
+                        label: 'Payment',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.4)',
+                            'rgba(75, 192, 192, 0.4)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { display: false, beginAtZero: true, max: 100 },
+                        x: { display: false }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+
+            // Update the chart with new random data every 500ms
+            placeholderInterval = setInterval(() => {
+                placeholderChart.data.datasets[0].data = [Math.random() * 80, Math.random() * 80];
+                placeholderChart.update();
+            }, 500);
+        }
+
+        // Function to stop the animation
+        function stopPlaceholderAnimation() {
+            if (placeholderInterval) {
+                clearInterval(placeholderInterval);
+            }
+            if (placeholderChart) {
+                placeholderChart.destroy();
+            }
+        }
 
         function calculateRefinance() {
+            // Stop the placeholder animation and hide it
+            stopPlaceholderAnimation();
+            document.getElementById('placeholder').classList.add('hidden');
+
             // Get current loan details from user inputs
             const currentPrincipal = parseFloat(document.getElementById('currentPrincipal').value);
             const currentTenureMonths = parseFloat(document.getElementById('currentTenure').value);
@@ -118,10 +400,16 @@
             const newTenureMonths = parseFloat(document.getElementById('newTenure').value);
             const processingFee = parseFloat(document.getElementById('processingFee').value || 0);
 
+            const errorMessage = document.getElementById('error-message');
+
             // Validate inputs
             if (isNaN(currentPrincipal) || isNaN(currentTenureMonths) || isNaN(currentRatePercent) || isNaN(currentEMI) || isNaN(newRatePercent) || isNaN(newTenureMonths)) {
-                alert('Please fill out all loan details before calculating.');
+                errorMessage.style.display = 'block';
+                document.getElementById('resultSection').style.display = 'none';
+                document.getElementById('chartSection').style.display = 'none';
                 return;
+            } else {
+                errorMessage.style.display = 'none';
             }
 
             // Calculate old total payment
@@ -138,7 +426,7 @@
             const netSavings = oldTotalPayment - newTotalPayment - processingFee;
 
             // Display results
-            document.getElementById('resultSection').classList.remove('hidden');
+            document.getElementById('resultSection').style.display = 'flex';
             document.getElementById('newEMI').textContent = '₹' + newEMI.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             document.getElementById('oldTotalPayment').textContent = '₹' + oldTotalPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             document.getElementById('newTotalPayment').textContent = '₹' + newTotalPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -151,7 +439,7 @@
         function updateChart(oldPayment, newPayment) {
             // Get the canvas context
             const ctx = document.getElementById('paymentChart').getContext('2d');
-            document.getElementById('chartSection').classList.remove('hidden');
+            document.getElementById('chartSection').style.display = 'block';
 
             // If a chart instance already exists, destroy it
             if (myChart) {
@@ -167,8 +455,8 @@
                         label: 'Total Payment',
                         data: [oldPayment, newPayment],
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.7)', // Red for current
-                            'rgba(75, 192, 192, 0.7)'  // Green for refinance
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(75, 192, 192, 0.7)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -218,6 +506,9 @@
                 }
             });
         }
+
+        // Start the animation when the page loads
+        //window.onload = startPlaceholderAnimation;
     </script>
 </body>
 </html>
