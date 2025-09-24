@@ -3,35 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Dashboard</title>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-light-blue">
+    <header class="header"></header>
 
-    <header class="dashboard-header">
-        <h1>Dashboard</h1>
-    </header>
-
-    <main class="dashboard-main">
-        <div class="container">
-            <div class="card">
-                <h2>Card 1</h2>
-                <p>This is the first card. It could display a key metric, chart, or summary of data.</p>
+    <main class="container my-5">
+        <h1 class="text-center mb-5 text-blue">Dashboard</h1>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='emi.html';">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark-blue">EMI</h5>
+                        <p class="card-text text-gray">Learn about EMI calculations and what they mean for your loans.</p>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <h2>Card 2</h2>
-                <p>This is the second card. It could show another important piece of information.</p>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='take-loan.html';">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark-blue">Take Loan</h5>
+                        <p class="card-text text-gray">Explore various loan options tailored to your needs.</p>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <h2>Card 3</h2>
-                <p>This is the third card. Use it to present a third set of data or a call to action.</p>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow-sm bg-off-white clickable-card" onclick="window.location.href='refinancing.html';">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark-blue">Refinancing</h5>
+                        <p class="card-text text-gray">Discover how refinancing can help you manage your existing loans better.</p>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="login.html" class="btn btn-secondary bg-dark-blue border-dark-blue">Return to Login</a>
         </div>
     </main>
 
-    <footer class="dashboard-footer">
-        <p>&copy; 2025 Basic Dashboard. All rights reserved.</p>
-    </footer>
-
+    <footer class="footer"></footer>
 </body>
 </html>
