@@ -1,31 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>EasyEMI - Take a Loan</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/all.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Options</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      padding-top: 4.2rem;
+      margin: 0;
+    }
+
+    .graph{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40%;
+        height: 400px;
+        margin-top: 20px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      padding: 2rem;
+      width: 100%;
+      max-width: 80rem;
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.875rem; /* 3xl */
+      font-weight: 700; /* bold */
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+      width: 60%;
+    }
+    
+    .card {
+      background-color: #f9fafb;
+      border: 1px solid #d1d5db;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-color: #6366f1;
+    }
+
+    .card h2 {
+      font-size: 1.25rem; /* xl */
+      font-weight: 600; /* semibold */
+      color: #1f2937;
+      margin: 0 0 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .card h2 .icon {
+      font-size: 1.5rem;
+      margin-right: 0.75rem;
+      color: #4f46e5;
+    }
+
+    /* Accordion Content */
+    .loan-info {
+      max-height: 0;
+      overflow: hidden;
+      padding-top: 0;
+      border-top: 1px solid transparent;
+      transition: max-height 0.2s ease-out, padding-top 0.25s ease-out, border-color .25s;
+    }
+
+    .loan-info.active {
+      max-height: 1000px;
+      padding-top: 1rem;
+      border-top-color: #e5e7eb;
+    }
+
+    /* Table Styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+        background-color: #eef2ff;
+        color: #4f46e5;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    tr:hover {
+        background-color: #f6f8ff;
+    }
+    
+  </style>
 </head>
-<body class="bg-light-blue">
-    <header class="header d-flex align-items-center justify-content-between px-4">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-cash-coin" style="font-size: 2rem; color: #3498db;"></i>
-            <h1 class="website-name ml-3">EasyEMI</h1>
-        </div>
-        <nav class="d-flex align-items-center">
-            <a href="dash.html" class="nav-link">Dashboard</a>
-            <a href="emiplan.html" class="nav-link">EMI</a>
-            <a href="finance.html" class="nav-link">Refinancing</a>
-        </nav>
-        <div></div>
-    </header>
-    <main class="container my-5">
-        <h2 class="text-blue mb-4">Take a Loan</h2>
-        <p>Explore various loan options tailored to your needs.</p>
-    </main>
-    <footer class="footer text-center py-3 bg-off-white text-gray">
-        &copy; 2025 EasyEMI. All rights reserved.
-    </footer>
-    <script src="js/all.js"></script>
+<body>
+
+<div class="container">
+    <div class = "graph">   </div>
+
+  
+  <div class="card-list">
+    <h1>Compare Loan Options</h1>
+  <p class="subtitle">Select a loan type to compare offers from various banks in a detailed table format.</p>
+  
+    <div class="card" onclick="toggleAccordion('houseInfo')">
+      <h2><span class="icon">🏠</span> House Loan</h2>
+      <div id="houseInfo" class="loan-info">
+        <table>
+            <thead>
+                <tr>
+                    <th>Bank</th>
+                    <th>Loan Amount</th>
+                    <th>Interest Rate (p.a.)</th>
+                    <th>Tenure</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>HDFC Bank</td>
+                    <td>₹7.5 Lacs - ₹5 Crores</td>
+                    <td>8.75% - 9.65%</td>
+                    <td>Up to 30 years</td>
+                </tr>
+                <tr>
+                    <td>ICICI Bank</td>
+                    <td>₹5 Lacs - ₹10 Crores</td>
+                    <td>8.80% - 9.85%</td>
+                    <td>Up to 25 years</td>
+                </tr>
+                <tr>
+                    <td>Axis Bank</td>
+                    <td>₹10 Lacs - ₹7 Crores</td>
+                    <td>8.90% - 9.70%</td>
+                    <td>Up to 30 years</td>
+                </tr>
+                <tr>
+                    <td>State Bank of India</td>
+                    <td>₹1 Lac - ₹5 Crores</td>
+                    <td>8.50% - 9.50%</td>
+                    <td>Up to 30 years</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" onclick="toggleAccordion('eduInfo')">
+      <h2><span class="icon">🎓</span> Education Loan</h2>
+      <div id="eduInfo" class="loan-info">
+        <table>
+            <thead>
+                <tr>
+                    <th>Bank</th>
+                    <th>Loan Amount</th>
+                    <th>Interest Rate (p.a.)</th>
+                    <th>Tenure</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>State Bank of India</td>
+                    <td>₹50 Lacs (Dom.), ₹1.5 Cr (Ab.)</td>
+                    <td>7.15% - 10.65%</td>
+                    <td>Up to 15 years</td>
+                </tr>
+                <tr>
+                    <td>Bank of Baroda</td>
+                    <td>₹20 Lacs (Dom.), ₹1.25 Cr (Ab.)</td>
+                    <td>8.15% - 11.50%</td>
+                    <td>Up to 10 years</td>
+                </tr>
+                <tr>
+                    <td>HDFC Bank</td>
+                    <td>₹45 Lacs (Dom.), ₹1 Cr (Ab.)</td>
+                    <td>9.50% - 13.50%</td>
+                    <td>Up to 15 years</td>
+                </tr>
+                <tr>
+                    <td>Punjab National Bank</td>
+                    <td>₹25 Lacs (Dom.), ₹50 Lacs (Ab.)</td>
+                    <td>8.75% - 12.00%</td>
+                    <td>Up to 15 years</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" onclick="toggleAccordion('bizInfo')">
+      <h2><span class="icon">💼</span> Business Loan</h2>
+      <div id="bizInfo" class="loan-info">
+        <table>
+            <thead>
+                <tr>
+                    <th>Bank</th>
+                    <th>Loan Amount</th>
+                    <th>Interest Rate (p.a.)</th>
+                    <th>Tenure</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Axis Bank</td>
+                    <td>₹1 Lac - ₹75 Lacs</td>
+                    <td>11.00% - 25.00%</td>
+                    <td>1 to 5 years</td>
+                </tr>
+                <tr>
+                    <td>HDFC Bank</td>
+                    <td>₹5 Lacs - ₹50 Lacs</td>
+                    <td>10.75% - 22.00%</td>
+                    <td>1 to 4 years</td>
+                </tr>
+                <tr>
+                    <td>Kotak Mahindra Bank</td>
+                    <td>₹3 Lacs - ₹1.5 Crores</td>
+                    <td>16.00% onwards</td>
+                    <td>1 to 5 years</td>
+                </tr>
+                <tr>
+                    <td>ICICI Bank</td>
+                    <td>₹10 Lacs - ₹1 Crore</td>
+                    <td>10.50% - 17.50%</td>
+                    <td>1 to 7 years</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleAccordion(id) {
+    const element = document.getElementById(id);
+    const allInfo = document.querySelectorAll('.loan-info');
+
+    // Close all other accordions
+    allInfo.forEach(info => {
+      if (info.id !== id && info.classList.contains('active')) {
+        info.classList.remove('active');
+      }
+    });
+
+    // Toggle the clicked accordion
+    element.classList.toggle('active');
+  }
+</script>
+
 </body>
 </html>
