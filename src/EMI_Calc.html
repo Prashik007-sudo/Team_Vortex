@@ -1,52 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>EMI Calculator</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    .container { max-width: 400px; margin: auto; }
-    input { width: 100%; margin: 8px 0; padding: 8px; }
-    button { padding: 10px; width: 100%; background: #4CAF50; color: white; border: none; cursor: pointer; }
-    button:hover { background: #45a049; }
-    .result { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 6px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>EMI Calculator</title>
+    <style>
+        /* General Body and Container Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f4f8, #e4e7eb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        /* Heading and Label Styling */
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        /* Sliders and Labels */
+        .slider-group {
+            margin-bottom: 20px;
+        }
+        
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+            border-radius: 5px;
+            height: 8px;
+            outline: none;
+            transition: background 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Result Section Styling */
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #eaf6ff;
+            border-radius: 10px;
+            border: 1px solid #b3e0ff;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .result b {
+            color: #2c3e50;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>EMI Calculator</h2>
-    <label>Loan Amount</label>
-    <input type="number" id="loan" placeholder="Enter loan amount">
+    <div class="container">
+        <h2>EMI Calculator</h2>
 
-    <label>Annual Interest Rate (%)</label>
-    <input type="number" id="rate" placeholder="Enter interest rate">
+        <div class="slider-group">
+            <label for="loan">
+                Loan Amount (₹)
+                <span id="loanValue">100000</span>
+            </label>
+            <input type="range" id="loan" min="100000" max="10000000" step="10000" value="100000">
+        </div>
 
-    <label>Tenure (months)</label>
-    <input type="number" id="months" placeholder="Enter tenure in months">
+        <div class="slider-group">
+            <label for="rate">
+                Annual Interest Rate (%)
+                <span id="rateValue">8.5</span>
+            </label>
+            <input type="range" id="rate" min="1" max="25" step="0.1" value="8.5">
+        </div>
 
-    <button onclick="calculateEMI()">Calculate EMI</button>
+        <div class="slider-group">
+            <label for="years">
+                Tenure (years)
+                <span id="yearsValue">10</span>
+            </label>
+            <input type="range" id="years" min="1" max="30" step="1" value="10">
+        </div>
 
-    <div class="result" id="result"></div>
-  </div>
+        <div class="result" id="result"></div>
+    </div>
 
-  <script>
-    function calculateEMI() {
-      let P = parseFloat(document.getElementById('loan').value);
-      let annualRate = parseFloat(document.getElementById('rate').value);
-      let N = parseInt(document.getElementById('months').value);
+    <script>
+        // Get the slider elements and their corresponding value displays
+        const loanSlider = document.getElementById('loan');
+        const rateSlider = document.getElementById('rate');
+        const yearsSlider = document.getElementById('years');
+        const loanValue = document.getElementById('loanValue');
+        const rateValue = document.getElementById('rateValue');
+        const yearsValue = document.getElementById('yearsValue');
 
-      let R = annualRate / 12 / 100; // monthly interest rate
+        function calculateEMI() {
+            let P = parseFloat(loanSlider.value);
+            let annualRate = parseFloat(rateSlider.value);
+            let N = parseInt(yearsSlider.value) * 12; // Convert years to months
 
-      let EMI = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
-      let totalPayment = EMI * N;
-      let totalInterest = totalPayment - P;
+            // Check for valid inputs
+            if (isNaN(P) || isNaN(annualRate) || isNaN(N) || P <= 0 || annualRate < 0 || N <= 0) {
+                document.getElementById('result').innerHTML = "Please enter valid numbers for all fields.";
+                return;
+            }
 
-      document.getElementById('result').innerHTML = `
-        <b>Monthly EMI:</b> ₹${EMI.toFixed(2)}<br>
-        <b>Total Interest:</b> ₹${totalInterest.toFixed(2)}<br>
-        <b>Total Payment:</b> ₹${totalPayment.toFixed(2)}
-      `;
-    }
-  </script>
+            let R = annualRate / 12 / 100; // monthly interest rate
+
+            let EMI = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+            let totalPayment = EMI * N;
+            let totalInterest = totalPayment - P;
+
+            document.getElementById('result').innerHTML = `
+                <b>Monthly EMI:</b> ₹${EMI.toFixed(2)}<br>
+                <b>Total Interest:</b> ₹${totalInterest.toFixed(2)}<br>
+                <b>Total Payment:</b> ₹${totalPayment.toFixed(2)}
+            `;
+        }
+
+        // Add event listeners to each slider to trigger calculations and value updates
+        loanSlider.addEventListener('input', () => {
+            loanValue.textContent = loanSlider.value;
+            calculateEMI();
+        });
+
+        rateSlider.addEventListener('input', () => {
+            rateValue.textContent = rateSlider.value;
+            calculateEMI();
+        });
+
+        yearsSlider.addEventListener('input', () => {
+            yearsValue.textContent = yearsSlider.value;
+            calculateEMI();
+        });
+
+        // Run calculation once on page load to show initial result
+        document.addEventListener('DOMContentLoaded', calculateEMI);
+    </script>
 </body>
 </html>
