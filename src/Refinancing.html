@@ -3,42 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Refinancing</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="bg-light-blue">
-    <header class="header"></header>
+    <title>Refinancing Calculator</title>
+    <link href="refinance.css" rel="stylesheet">
 
-    <main class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card p-4 shadow-sm bg-off-white">
-                    <h2 class="card-title text-center mb-4 text-blue">Refinancing Calculator</h2>
-                    <form id="refinancingForm">
-                        <div class="form-group">
-                            <label for="existingLoan">Existing Loan Amount</label>
-                            <input type="number" class="form-control" id="existingLoan" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="annualIncome">Annual Income</label>
-                            <input type="number" class="form-control" id="annualIncome" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block bg-dark-blue border-dark-blue">Calculate</button>
-                    </form>
-                    <div id="refinancingResult" class="mt-4 p-3 border rounded text-center d-none bg-off-white">
-                        <h5 class="text-dark-blue">Refinancing eligibility:</h5>
-                        <p id="resultText" class="text-gray"></p>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb;
+        }
+        /* Custom styles for the chart */
+        #paymentChart {
+            max-width: 600px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
+        <div class="flex flex-col gap-6">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Refinancing Calculator</h1>
+
+            <!-- 1. Current Loan Snapshot (User Input) -->
+            <div class="space-y-4 mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+                <h2 class="text-xl font-semibold text-blue-800">Current Loan Snapshot</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="currentPrincipal" class="block text-sm font-medium text-gray-700">Outstanding Principal (₹)</label>
+                        <input type="number" id="currentPrincipal" value="500000" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 500000">
+                    </div>
+                    <div>
+                        <label for="currentTenure" class="block text-sm font-medium text-gray-700">Remaining Tenure (months)</label>
+                        <input type="number" id="currentTenure" value="60" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 60">
+                    </div>
+                    <div>
+                        <label for="currentRate" class="block text-sm font-medium text-gray-700">Current Interest Rate (%)</label>
+                        <input type="number" id="currentRate" value="12" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 12">
+                    </div>
+                    <div>
+                        <label for="currentEMI" class="block text-sm font-medium text-gray-700">Current EMI (₹)</label>
+                        <input type="number" id="currentEMI" value="11122" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 11122">
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="text-center mt-4">
-            <a href="dashboard.html" class="btn btn-secondary bg-dark-blue border-dark-blue">Return to Dashboard</a>
-        </div>
-    </main>
 
-    <footer class="footer"></footer>
-    <script src="script.js"></script>
+            <!-- 2. Refinance Input -->
+            <div class="space-y-6 mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">Refinance Offer</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label for="newRate" class="block text-sm font-medium text-gray-700">New Interest Rate (%)</label>
+                        <input type="number" id="newRate" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 9.5">
+                    </div>
+                    <div>
+                        <label for="newTenure" class="block text-sm font-medium text-gray-700">New Tenure (months)</label>
+                        <input type="number" id="newTenure" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200" placeholder="e.g., 48">
+                    </div>
+                    <div class="col-span-1 sm:col-span-2">
+                        <label for="processingFee" class="block text-sm font-medium text-gray-700">Processing Fee (₹)</label>
+                        <input type="number" id="processingFee" value="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                    </div>
+                </div>
+
+                <button onclick="calculateRefinance()" class="w-full py-3 px-4 rounded-md text-white font-semibold shadow-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                    CALCULATE REFINANCE BENEFIT
+                </button>
+            </div>
+        
+        </div>
+        <div display>
+            <!-- 3. Comparison Result -->
+            <div id="resultSection" class="hidden space-y-4 mb-8 p-6 bg-green-50 rounded-lg border border-green-200">
+                <h2 class="text-xl font-semibold text-green-800">Comparison Result</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">New EMI</label>
+                        <p id="newEMI" class="mt-1 text-lg font-bold text-gray-800"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Old Total Payment</label>
+                        <p id="oldTotalPayment" class="mt-1 text-lg font-bold text-gray-800"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">New Total Payment</label>
+                        <p id="newTotalPayment" class="mt-1 text-lg font-bold text-gray-800"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Net Savings</label>
+                        <p id="netSavings" class="mt-1 text-lg font-bold text-gray-800"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Quick Visualization -->
+            <div id="chartSection" class="hidden p-6">
+                <h2 class="text-xl font-semibold text-center text-gray-800 mb-4">Total Payment Comparison</h2>
+                <canvas id="paymentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let myChart; // Variable to hold the Chart.js instance
+
+        function calculateRefinance() {
+            // Get current loan details from user inputs
+            const currentPrincipal = parseFloat(document.getElementById('currentPrincipal').value);
+            const currentTenureMonths = parseFloat(document.getElementById('currentTenure').value);
+            const currentRatePercent = parseFloat(document.getElementById('currentRate').value);
+            const currentEMI = parseFloat(document.getElementById('currentEMI').value);
+
+            // Get refinance inputs
+            const newRatePercent = parseFloat(document.getElementById('newRate').value);
+            const newTenureMonths = parseFloat(document.getElementById('newTenure').value);
+            const processingFee = parseFloat(document.getElementById('processingFee').value || 0);
+
+            // Validate inputs
+            if (isNaN(currentPrincipal) || isNaN(currentTenureMonths) || isNaN(currentRatePercent) || isNaN(currentEMI) || isNaN(newRatePercent) || isNaN(newTenureMonths)) {
+                alert('Please fill out all loan details before calculating.');
+                return;
+            }
+
+            // Calculate old total payment
+            const oldTotalPayment = currentEMI * currentTenureMonths;
+
+            // Calculate new EMI
+            const newMonthlyRate = (newRatePercent / 100) / 12;
+            const newEMI = (currentPrincipal * newMonthlyRate * Math.pow(1 + newMonthlyRate, newTenureMonths)) / (Math.pow(1 + newMonthlyRate, newTenureMonths) - 1);
+
+            // Calculate new total payment
+            const newTotalPayment = newEMI * newTenureMonths;
+
+            // Calculate net savings
+            const netSavings = oldTotalPayment - newTotalPayment - processingFee;
+
+            // Display results
+            document.getElementById('resultSection').classList.remove('hidden');
+            document.getElementById('newEMI').textContent = '₹' + newEMI.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            document.getElementById('oldTotalPayment').textContent = '₹' + oldTotalPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            document.getElementById('newTotalPayment').textContent = '₹' + newTotalPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            document.getElementById('netSavings').textContent = '₹' + netSavings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            // Update chart
+            updateChart(oldTotalPayment, newTotalPayment);
+        }
+
+        function updateChart(oldPayment, newPayment) {
+            // Get the canvas context
+            const ctx = document.getElementById('paymentChart').getContext('2d');
+            document.getElementById('chartSection').classList.remove('hidden');
+
+            // If a chart instance already exists, destroy it
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            // Create a new chart
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Current Loan Total', 'Refinance Loan Total'],
+                    datasets: [{
+                        label: 'Total Payment',
+                        data: [oldPayment, newPayment],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)', // Red for current
+                            'rgba(75, 192, 192, 0.7)'  // Green for refinance
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return '₹' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(context.raw);
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
